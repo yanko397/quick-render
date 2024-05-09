@@ -1,0 +1,15 @@
+{
+  "name": "rendering-dots-going-around-in-circles",
+  "version": "1.0.0",
+  "description": "here i will be rendering a dot going around in a circle and another dot following the first one at varying speeds to see what happens",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}

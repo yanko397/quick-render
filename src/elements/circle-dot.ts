@@ -1,9 +1,6 @@
 import { BaseData, CircleDot } from "@types";
 
 export function renderCircleDot(context: CanvasRenderingContext2D, baseData: BaseData, dto: CircleDot) {
-    dto.x ||= 0;
-    dto.y ||= 0;
-
     // update position
     const theta = (dto.right ? 1 : -1) * dto.speed / dto.circleRadius() * baseData.ticks;
     dto.x = dto.circleCenter().x + dto.circleRadius() * Math.cos(theta);

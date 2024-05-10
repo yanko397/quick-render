@@ -30,7 +30,7 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
         radius: 20,
         circleRadius: circle.radius,
         color: 'green',
-        speed: 0.5,
+        speed: 3,
         right: true,
     };
     const chaserDot: ChaserDot = {
@@ -38,7 +38,7 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
         y: baseData.height() / 2,
         radius: 10,
         color: 'red',
-        speed: 0.5,
+        speed: circleDot.speed * 0.5,
         target: circleDot,
     };
     const statusTextDto: StatusText = {
@@ -59,9 +59,9 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
         // renderBorder(context, baseData);
         renderStatusText(context, baseData, statusTextDto);
         renderCircle(context, circle);
-        renderDvdLogo(context, baseData, dvdLogo);
         renderCircleDot(context, baseData, circleDot);
         renderChaserDot(context, chaserDot);
+        renderDvdLogo(context, baseData, dvdLogo);
 
         baseData.ticks++;
         requestAnimationFrame(draw);

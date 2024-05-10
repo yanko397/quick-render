@@ -2,7 +2,7 @@ import { ChaserDot } from "@types";
 
 export function renderChaserDot(context: CanvasRenderingContext2D, dto: ChaserDot) {
     // update position
-    if (dto.target.x !== undefined && dto.target.y !== undefined) {
+    if (dto.target.x && dto.target.y) {
         const dx = dto.target.x - dto.x;
         const dy = dto.target.y - dto.y;
         const distance = Math.sqrt(dx * dx + dy * dy);

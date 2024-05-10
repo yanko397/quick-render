@@ -1,2 +1,19 @@
 
-here i will be rendering a dot going around in a circle and another dot following the first one at varying speeds to see what happens
+# WAT
+
+This is a simple web app that just contains a canvas to render all kinds of stuff.
+
+
+# How to run
+
+- install Node.js (I'm using v20.13.1)
+- run the following commands:
+
+```bash
+# install dependencies
+npm install
+# compile typescript
+npm run build  # or `npm run watch` if you want to develop and see changes in real time
+# start the server
+npm start
+```

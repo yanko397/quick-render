@@ -1,12 +1,12 @@
-import { renderBorder, renderDvdRectangle, renderStatusText } from "@elements";
-import { BaseData, DVDRectangle, StatusText } from "@types";
+import { renderBorder, renderDvdLogo, renderStatusText } from "@elements";
+import { BaseData, DVDLogo, StatusText } from "@types";
 
 function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
     const baseData: BaseData = {
         ticks: 0,
         fontSize: 18,
     };
-    const dvdRectangle: DVDRectangle = {
+    const dvdLogo: DVDLogo = {
         x: 0,
         y: 0,
         right: true,
@@ -18,22 +18,22 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
     };
     const statusTextDto: StatusText = {
         baseData: baseData,
-        dvdRectangle: dvdRectangle,
+        dvdLogo: dvdLogo,
     };
 
     let image = new Image();
     image.src = 'dvd-logo.svg';
     image.onload = () => {
-        dvdRectangle.image = image;
-        dvdRectangle.height = image.height * dvdRectangle.width / image.width;
+        dvdLogo.image = image;
+        dvdLogo.height = image.height * dvdLogo.width / image.width;
     };
 
     function draw() {
         context.clearRect(0, 0, canvas.width, canvas.height);
 
-        renderBorder(canvas, context);
-        renderDvdRectangle(canvas, context, dvdRectangle);
+        // renderBorder(canvas, context);
         renderStatusText(canvas, context, statusTextDto);
+        renderDvdLogo(canvas, context, dvdLogo);
 
         baseData.ticks++;
         requestAnimationFrame(draw);

@@ -12,7 +12,7 @@ export function renderStatusText(canvas: HTMLCanvasElement, context: CanvasRende
         return `${name}`.padEnd(15, ' ') + '|' + `${value}`.padStart(8, ' ') + ` | ${extra}`;
     }
 
-    const speed = dto.dvdRectangle.currentSpeed || dto.dvdRectangle.baseSpeed;
+    const speed = dto.dvdLogo.currentSpeed || dto.dvdLogo.baseSpeed;
     const statusTexts = [
         makeStatus('ticks', dto.baseData.ticks),
         makeStatus('canvas.width', canvas.width),
@@ -23,6 +23,7 @@ export function renderStatusText(canvas: HTMLCanvasElement, context: CanvasRende
 
     for (let i = 0; i < statusTexts.length; i++) {
         context.font = `bold ${dto.baseData.fontSize}px monospace`;
+        context.fillStyle = '#aaaaaa';
         context.fillText(statusTexts[i], 10, dto.baseData.fontSize + i * dto.baseData.fontSize);
     }
 }

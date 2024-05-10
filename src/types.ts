@@ -4,7 +4,7 @@ export type BaseData = {
     fontSize: number;
 };
 
-export type DVDRectangle = {
+export type DVDLogo = {
     x: number;
     y: number;
     right: boolean;
@@ -19,5 +19,5 @@ export type DVDRectangle = {
 
 export type StatusText = {
     baseData: BaseData;
-    dvdRectangle: DVDRectangle;
+    dvdLogo: DVDLogo;
 };

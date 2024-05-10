@@ -1,4 +1,4 @@
-import { ChaserDot } from "@types";
+import { ChaserDot } from "interfaces";
 
 export function renderChaserDot(context: CanvasRenderingContext2D, dto: ChaserDot) {
     // update position

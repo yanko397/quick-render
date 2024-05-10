@@ -1,5 +1,5 @@
 import { renderBorder, renderChaserDot, renderCircle, renderCircleDot, renderDvdLogo, renderStatusText } from "@elements";
-import { BaseData, ChaserDot, Circle, CircleDot, DVDLogo, StatusEntry } from "@types";
+import { BaseData, ChaserDot, Circle, CircleDot, DVDLogo, StatusEntry } from "interfaces";
 
 function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
     const baseData: BaseData = {
@@ -31,7 +31,7 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
         circleRadius: circle.radius,
         color: 'green',
         speed: 3,
-        right: true,
+        direction: 'clockwise',
     };
     const chaserDot: ChaserDot = {
         pos: { x: baseData.width() / 2, y: baseData.height() / 2 },

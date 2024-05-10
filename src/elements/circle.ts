@@ -1,4 +1,4 @@
-import { Circle } from "@types";
+import { Circle } from "interfaces";
 
 export function renderCircle(context: CanvasRenderingContext2D, dto: Circle) {
     context.strokeStyle = dto.color;

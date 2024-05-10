@@ -1,4 +1,4 @@
-import { BaseData } from "@types";
+import { BaseData } from "interfaces";
 
 /**
  *  a 3 px border around the canvas to see the edges

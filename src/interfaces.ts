@@ -28,21 +28,20 @@ export interface Circle extends Printable{
     lineWidth: number;
 };
 
-export interface CircleDot extends Printable{
+interface Dot extends Printable{
     pos: Point;
     radius: number;
-    circleCenter: () => Point;
-    circleRadius: () => number;
     color: string;
     speed: number;
-    right: boolean;
 };
 
-export interface ChaserDot extends Printable{
-    pos: Point;
-    radius: number;
-    color: string;
-    speed: number;
+export interface CircleDot extends Dot{
+    circleCenter: () => Point;
+    circleRadius: () => number;
+    direction: 'clockwise' | 'counter-clockwise';
+};
+
+export interface ChaserDot extends Dot{
     target?: Point;
 };
 

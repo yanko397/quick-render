@@ -1,4 +1,4 @@
-import { BaseData, StatusEntry } from "@types";
+import { BaseData, StatusEntry } from "interfaces";
 
 /**
  * Renders the status text on the canvas.
@@ -9,8 +9,8 @@ import { BaseData, StatusEntry } from "@types";
  */
 export function renderStatusText(context: CanvasRenderingContext2D, baseData: BaseData, entries: StatusEntry[]) {
     function makeStatus(entry: StatusEntry) {
-        return `${entry.name}`.padEnd(22, ' ')
-            + '|' + `${entry.value}`.padStart(20, ' ')
+        return `${entry.name}`.padEnd(24, ' ')
+            + '|' + `${entry.value}`.padStart(15, ' ')
             + (entry.extra !== undefined ? `  ${entry.extra}` : '');
     }
 

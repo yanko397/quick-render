@@ -1,4 +1,4 @@
-import { BaseData, DVDLogo as DVDLogo } from "@types";
+import { BaseData, DVDLogo as DVDLogo } from "interfaces";
 
 /**
  * Renders the DVD logo on the canvas.
@@ -38,7 +38,7 @@ export function renderDvdLogo(context: CanvasRenderingContext2D, baseData: BaseD
     // update status text
     dto.entries = [{
         name: 'dvd speed',
-        value: dto.currentSpeed.toFixed(2),
+        value: dto.currentSpeed.toFixed(1),
         extra: '='.repeat(Math.max(0, Math.floor(dto.currentSpeed * 2)))
     }];
 }

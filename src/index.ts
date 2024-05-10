@@ -1,5 +1,5 @@
-import { renderBorder, renderDvdLogo, renderStatusText } from "@elements";
-import { BaseData, DVDLogo, StatusText } from "@types";
+import { renderBorder, renderChaserDot, renderCircle, renderCircleDot, renderDvdLogo, renderStatusText } from "@elements";
+import { BaseData, ChaserDot, Circle, CircleDot, DVDLogo, StatusText } from "@types";
 
 function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
     const baseData: BaseData = {
@@ -19,6 +19,28 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
         width: 150,
         height: 50, // gets overwritten by the image's aspect ratio
     };
+    const circle: Circle = {
+        center: () => ({ x: baseData.width() / 2, y: baseData.height() / 2 }),
+        radius: () => Math.min(baseData.width(), baseData.height()) / 2 - 30,
+        color: 'blue',
+        lineWidth: 1,
+    };
+    const circleDot: CircleDot = {
+        circleCenter: circle.center,
+        radius: 20,
+        circleRadius: circle.radius,
+        color: 'green',
+        speed: 0.5,
+        right: true,
+    };
+    const chaserDot: ChaserDot = {
+        x: baseData.width() / 2,
+        y: baseData.height() / 2,
+        radius: 10,
+        color: 'red',
+        speed: 0.5,
+        target: circleDot,
+    };
     const statusTextDto: StatusText = {
         baseData: baseData,
         dvdLogo: dvdLogo,
@@ -36,7 +58,10 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
 
         // renderBorder(context, baseData);
         renderStatusText(context, baseData, statusTextDto);
+        renderCircle(context, circle);
         renderDvdLogo(context, baseData, dvdLogo);
+        renderCircleDot(context, baseData, circleDot);
+        renderChaserDot(context, chaserDot);
 
         baseData.ticks++;
         requestAnimationFrame(draw);

@@ -4,7 +4,8 @@
   "description": "here i will be rendering a dot going around in a circle and another dot following the first one at varying speeds to see what happens",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "lite-server"
   },
   "keywords": [],
   "author": "",

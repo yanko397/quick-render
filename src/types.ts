@@ -9,8 +9,8 @@ export type DVDRectangle = {
     y: number;
     right: boolean;
     down: boolean;
-    baseSpeed: number,
-    currentSpeed: number;
+    baseSpeed: number;
+    currentSpeed?: number;
     boostRatio: number;
     size: number;
 };

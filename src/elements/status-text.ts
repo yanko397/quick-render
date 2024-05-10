@@ -1,4 +1,4 @@
-import { StatusText } from "interfaces.js";
+import { StatusText } from "@types";
 
 /**
  * Renders the status text on the canvas.
@@ -12,17 +12,15 @@ export function renderStatusText(canvas: HTMLCanvasElement, context: CanvasRende
         return `${name}`.padEnd(15, ' ') + '|' + `${value}`.padStart(8, ' ') + ` | ${extra}`;
     }
 
-    // status text
+    const speed = dto.dvdRectangle.currentSpeed || dto.dvdRectangle.baseSpeed;
     const statusTexts = [
         makeStatus('time', dto.baseData.time),
         makeStatus('canvas.width', canvas.width),
         makeStatus('canvas.height', canvas.height),
-        makeStatus(
-            'speed',
-            dto.dvdRectangle.currentSpeed.toFixed(2),
-            '='.repeat(Math.max(0, Math.floor(dto.dvdRectangle.currentSpeed * 2)))
+        makeStatus('speed', speed.toFixed(2), '='.repeat(Math.max(0, Math.floor(speed * 2)))
         ),
     ];
+
     for (let i = 0; i < statusTexts.length; i++) {
         context.font = `bold ${dto.baseData.fontSize}px monospace`;
         context.fillText(statusTexts[i], 10, dto.baseData.fontSize + i * dto.baseData.fontSize);

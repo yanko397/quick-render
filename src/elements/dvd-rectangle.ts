@@ -1,4 +1,4 @@
-import { DVDRectangle } from "interfaces.js";
+import { DVDRectangle } from "@types";
 
 /**
  * Renders a DVD rectangle on the canvas.

@@ -1,7 +1,5 @@
-import { DVDRectangle, StatusText } from "interfaces.js";
-import { renderDvdRectangle } from "./bodies/dvd-rectangle.js";
-import { renderStatusText } from "./bodies/status-text.js";
-import { renderBorder } from "./bodies/border.js";
+import { renderBorder, renderDvdRectangle, renderStatusText } from "@elements";
+import { DVDRectangle, StatusText } from "@types";
 
 function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
     const baseData = {
@@ -14,9 +12,8 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
         right: true,
         down: true,
         baseSpeed: 0.3,
-        currentSpeed: 0.3,
         boostRatio: 0.05,
-        size: 20,
+        size: 40,
     };
     const statusTextDto: StatusText = {
         baseData: baseData,

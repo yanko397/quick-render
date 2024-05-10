@@ -3,14 +3,21 @@
   "version": "1.0.0",
   "description": "here i will be rendering a dot going around in a circle and another dot following the first one at varying speeds to see what happens",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rollup -c",
+    "watch": "rollup -c -w",
     "start": "lite-server"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "rollup": "^4.17.2",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-typescript2": "^0.36.0",
     "typescript": "^5.4.5"
   }
 }

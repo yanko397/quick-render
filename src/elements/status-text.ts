@@ -14,7 +14,7 @@ export function renderStatusText(canvas: HTMLCanvasElement, context: CanvasRende
 
     const speed = dto.dvdRectangle.currentSpeed || dto.dvdRectangle.baseSpeed;
     const statusTexts = [
-        makeStatus('time', dto.baseData.time),
+        makeStatus('ticks', dto.baseData.ticks),
         makeStatus('canvas.width', canvas.width),
         makeStatus('canvas.height', canvas.height),
         makeStatus('speed', speed.toFixed(2), '='.repeat(Math.max(0, Math.floor(speed * 2)))

@@ -1,10 +1,10 @@
 import { renderBorder, renderDvdRectangle, renderStatusText } from "@elements";
-import { DVDRectangle, StatusText } from "@types";
+import { BaseData, DVDRectangle, StatusText } from "@types";
 
 function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
-    const baseData = {
-        time: 0,
-        fontSize: 25,
+    const baseData: BaseData = {
+        ticks: 0,
+        fontSize: 18,
     };
     const dvdRectangle: DVDRectangle = {
         x: 0,
@@ -12,12 +12,20 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
         right: true,
         down: true,
         baseSpeed: 0.3,
-        boostRatio: 0.05,
-        size: 40,
+        boostRatio: 0.04,
+        width: 150,
+        height: 50, // gets overwritten by the image's aspect ratio
     };
     const statusTextDto: StatusText = {
         baseData: baseData,
         dvdRectangle: dvdRectangle,
+    };
+
+    let image = new Image();
+    image.src = 'dvd-logo.svg';
+    image.onload = () => {
+        dvdRectangle.image = image;
+        dvdRectangle.height = image.height * dvdRectangle.width / image.width;
     };
 
     function draw() {
@@ -27,10 +35,9 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
         renderDvdRectangle(canvas, context, dvdRectangle);
         renderStatusText(canvas, context, statusTextDto);
 
+        baseData.ticks++;
         requestAnimationFrame(draw);
-        baseData.time++;
     }
-
     draw();
 }
 
@@ -38,24 +45,17 @@ function main() {
     const canvas = document.getElementById('canvas') as HTMLCanvasElement;
     const context = canvas.getContext('2d');
 
-    function resizeCanvas() {
+    window.addEventListener('resize', () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+    });
+    window.dispatchEvent(new Event('resize'));
 
-    }
-
-    // Call any drawing or animation functions here
     if (context) {
         animate(canvas, context);
     } else {
         throw new Error('Unable to get 2d context');
     }
-
-    // Initial call to resizeCanvas
-    resizeCanvas();
-
-    // Listen for window resize events
-    window.addEventListener('resize', resizeCanvas);
 }
 
 document.addEventListener('DOMContentLoaded', main);

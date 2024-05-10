@@ -1,6 +1,6 @@
 
 export type BaseData = {
-    time: number;
+    ticks: number;
     fontSize: number;
 };
 
@@ -12,7 +12,9 @@ export type DVDRectangle = {
     baseSpeed: number;
     currentSpeed?: number;
     boostRatio: number;
-    size: number;
+    width: number;
+    height: number;
+    image?: HTMLImageElement;
 };
 
 export type StatusText = {

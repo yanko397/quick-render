@@ -34,4 +34,11 @@ export function renderDvdLogo(context: CanvasRenderingContext2D, baseData: BaseD
     } else {
         // context.fillRect(dto.x, dto.y, dto.width, dto.height);
     }
+
+    // update status text
+    dto.entries = [{
+        name: 'dvd speed',
+        value: dto.currentSpeed.toFixed(2),
+        extra: '='.repeat(Math.max(0, Math.floor(dto.currentSpeed * 2)))
+    }];
 }

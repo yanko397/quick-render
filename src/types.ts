@@ -1,4 +1,4 @@
-export type BaseData = {
+export interface BaseData {
     tick: number;
     fontSize: number;
     width: () => number;
@@ -6,24 +6,29 @@ export type BaseData = {
     ratio: () => number;
 };
 
-export type StatusText = {
-    baseData: BaseData;
-    dvdLogo: DVDLogo;
+export interface StatusEntry {
+    name: string;
+    value: string | number;
+    extra?: string;
 };
 
-export type Point = {
+interface Printable {
+    entries?: StatusEntry[];
+};
+
+interface Point {
     x: number;
     y: number;
 };
 
-export type Circle = {
+export interface Circle extends Printable{
     center: () => Point;
     radius: () => number;
     color: string;
     lineWidth: number;
 };
 
-export type CircleDot = {
+export interface CircleDot extends Printable{
     pos: Point;
     radius: number;
     circleCenter: () => Point;
@@ -33,7 +38,7 @@ export type CircleDot = {
     right: boolean;
 };
 
-export type ChaserDot = {
+export interface ChaserDot extends Printable{
     pos: Point;
     radius: number;
     color: string;
@@ -41,7 +46,7 @@ export type ChaserDot = {
     target?: Point;
 };
 
-export type DVDLogo = {
+export interface DVDLogo extends Printable {
     pos: Point;
     right: boolean;
     down: boolean;

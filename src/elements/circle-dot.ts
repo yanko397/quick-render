@@ -11,4 +11,10 @@ export function renderCircleDot(context: CanvasRenderingContext2D, baseData: Bas
     context.beginPath();
     context.arc(dto.pos.x, dto.pos.y, dto.radius, 0, Math.PI * 2);
     context.fill();
+
+    // update status text
+    dto.entries = [
+        { name: 'circle dot speed', value: dto.speed },
+        { name: 'circle dot position', value: `(${dto.pos.x.toFixed(2)}, ${dto.pos.y.toFixed(2)})` },
+    ];
 }

@@ -1,10 +1,10 @@
 import { renderBorder, renderChaserDot, renderCircle, renderCircleDot, renderDvdLogo, renderStatusText } from "@elements";
-import { BaseData, ChaserDot, Circle, CircleDot, DVDLogo, StatusText } from "@types";
+import { BaseData, ChaserDot, Circle, CircleDot, DVDLogo, StatusEntry } from "@types";
 
 function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
     const baseData: BaseData = {
         tick: 0,
-        fontSize: 18,
+        fontSize: 12,
         width: () => window.innerWidth,
         height: () => window.innerHeight,
         ratio: () => Math.ceil(window.devicePixelRatio),
@@ -16,7 +16,7 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
         baseSpeed: 0.3,
         boostRatio: 0.04,
         width: 150,
-        height: 50, // gets overwritten by the image's aspect ratio
+        height: 50,
     };
     const circle: Circle = {
         center: () => ({ x: baseData.width() / 2, y: baseData.height() / 2 }),
@@ -40,10 +40,6 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
         speed: circleDot.speed * 0.5,
         target: circleDot.pos,
     };
-    const statusTextDto: StatusText = {
-        baseData: baseData,
-        dvdLogo: dvdLogo,
-    };
 
     let image = new Image();
     image.src = 'dvd-logo.svg';
@@ -55,14 +51,23 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
     function draw() {
         context.clearRect(0, 0, canvas.width, canvas.height);
 
-        // renderBorder(context, baseData);
-        renderStatusText(context, baseData, statusTextDto);
-
         renderCircle(context, circle);
         renderCircleDot(context, baseData, circleDot);
         renderChaserDot(context, chaserDot);
 
         renderDvdLogo(context, baseData, dvdLogo);
+
+        const statusEntries: StatusEntry[] = [
+            { name: 'tick', value: baseData.tick },
+            { name: 'cancas size', value: `${baseData.width()} x ${baseData.height()}` },
+            { name: 'real size', value: `${baseData.width() * baseData.ratio()} x ${baseData.height() * baseData.ratio()}` },
+            ...(circle.entries || []),
+            ...(circleDot.entries || []),
+            ...(chaserDot.entries || []),
+            ...(dvdLogo.entries || []),
+        ]
+        renderStatusText(context, baseData, statusEntries);
+        // renderBorder(context, baseData);
 
         baseData.tick++;
         requestAnimationFrame(draw);

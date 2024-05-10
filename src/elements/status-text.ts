@@ -14,7 +14,7 @@ export function renderStatusText(context: CanvasRenderingContext2D, baseData: Ba
 
     const speed = dto.dvdLogo.currentSpeed || dto.dvdLogo.baseSpeed;
     const statusTexts = [
-        makeStatus('ticks', dto.baseData.ticks),
+        makeStatus('tick', dto.baseData.tick),
         makeStatus('canvas width', baseData.width()),
         makeStatus('  real width', baseData.width() * baseData.ratio()),
         makeStatus('canvas height', baseData.height()),

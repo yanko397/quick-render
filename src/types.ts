@@ -1,5 +1,5 @@
 export type BaseData = {
-    ticks: number;
+    tick: number;
     fontSize: number;
     width: () => number;
     height: () => number;
@@ -11,18 +11,22 @@ export type StatusText = {
     dvdLogo: DVDLogo;
 };
 
+export type Point = {
+    x: number;
+    y: number;
+};
+
 export type Circle = {
-    center: () => { x: number; y: number };
+    center: () => Point;
     radius: () => number;
     color: string;
     lineWidth: number;
 };
 
 export type CircleDot = {
-    x?: number;
-    y?: number;
+    pos: Point;
     radius: number;
-    circleCenter: () => { x: number; y: number };
+    circleCenter: () => Point;
     circleRadius: () => number;
     color: string;
     speed: number;
@@ -30,17 +34,15 @@ export type CircleDot = {
 };
 
 export type ChaserDot = {
-    x: number;
-    y: number;
+    pos: Point;
     radius: number;
     color: string;
     speed: number;
-    target: CircleDot;
+    target?: Point;
 };
 
 export type DVDLogo = {
-    x: number;
-    y: number;
+    pos: Point;
     right: boolean;
     down: boolean;
     baseSpeed: number;

@@ -2,6 +2,9 @@
 export type BaseData = {
     ticks: number;
     fontSize: number;
+    width: () => number;
+    height: () => number;
+    ratio: () => number;
 };
 
 export type DVDLogo = {

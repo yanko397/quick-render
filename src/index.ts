@@ -5,6 +5,9 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
     const baseData: BaseData = {
         ticks: 0,
         fontSize: 18,
+        width: () => window.innerWidth,
+        height: () => window.innerHeight,
+        ratio: () => Math.ceil(window.devicePixelRatio),
     };
     const dvdLogo: DVDLogo = {
         x: 0,
@@ -31,9 +34,9 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
     function draw() {
         context.clearRect(0, 0, canvas.width, canvas.height);
 
-        // renderBorder(canvas, context);
-        renderStatusText(canvas, context, statusTextDto);
-        renderDvdLogo(canvas, context, dvdLogo);
+        // renderBorder(context, baseData);
+        renderStatusText(context, baseData, statusTextDto);
+        renderDvdLogo(context, baseData, dvdLogo);
 
         baseData.ticks++;
         requestAnimationFrame(draw);
@@ -46,8 +49,13 @@ function main() {
     const context = canvas.getContext('2d');
 
     window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        // resize canvas to fit the window and scale it up for retina displays
+        const ratio = Math.ceil(window.devicePixelRatio);
+        canvas.width = window.innerWidth * ratio;
+        canvas.height = window.innerHeight * ratio;
+        canvas.style.width = `${window.innerWidth}px`;
+        canvas.style.height = `${window.innerHeight}px`;
+        canvas.getContext('2d')?.setTransform(ratio, 0, 0, ratio, 0, 0);
     });
     window.dispatchEvent(new Event('resize'));
 

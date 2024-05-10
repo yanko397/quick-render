@@ -1,4 +1,4 @@
-import { StatusText } from "@types";
+import { BaseData, StatusText } from "@types";
 
 /**
  * Renders the status text on the canvas.
@@ -7,7 +7,7 @@ import { StatusText } from "@types";
  * @param {CanvasRenderingContext2D} context
  * @param {StatusText} dto
  */
-export function renderStatusText(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, dto: StatusText) {
+export function renderStatusText(context: CanvasRenderingContext2D, baseData: BaseData, dto: StatusText) {
     function makeStatus(name: string, value: string | number, extra: string = '') {
         return `${name}`.padEnd(15, ' ') + '|' + `${value}`.padStart(8, ' ') + ` | ${extra}`;
     }
@@ -15,8 +15,10 @@ export function renderStatusText(canvas: HTMLCanvasElement, context: CanvasRende
     const speed = dto.dvdLogo.currentSpeed || dto.dvdLogo.baseSpeed;
     const statusTexts = [
         makeStatus('ticks', dto.baseData.ticks),
-        makeStatus('canvas.width', canvas.width),
-        makeStatus('canvas.height', canvas.height),
+        makeStatus('canvas width', baseData.width()),
+        makeStatus('  real width', baseData.width() * baseData.ratio()),
+        makeStatus('canvas height', baseData.height()),
+        makeStatus('  real height', baseData.height() * baseData.ratio()),
         makeStatus('speed', speed.toFixed(2), '='.repeat(Math.max(0, Math.floor(speed * 2)))
         ),
     ];

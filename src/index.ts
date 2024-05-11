@@ -39,6 +39,7 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
         color: 'red',
         speed: circleDot.speed * 0.5,
         target: circleDot.pos,
+        trail: { points: [], maxLength: 1000, radius: 1, color: 'darkred' }
     };
 
     let image = new Image();
@@ -47,6 +48,9 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
         dvdLogo.image = image;
         dvdLogo.height = image.height * dvdLogo.width / image.width;
     };
+
+    let recently = performance.now();
+    let ticksPerSecond = 0;
 
     function draw() {
         context.clearRect(0, 0, canvas.width, canvas.height);
@@ -57,9 +61,17 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
 
         renderDvdLogo(context, baseData, dvdLogo);
 
+        const now = performance.now();
+        if (baseData.tick % 50 === 0) {
+            const elapsed = now - recently;
+            ticksPerSecond = 50 / (elapsed / 1000);
+            recently = now;
+        }
+
         const statusEntries: StatusEntry[] = [
             { name: 'tick', value: baseData.tick },
-            { name: 'cancas size', value: `${baseData.width()} x ${baseData.height()}` },
+            { name: 'ticks per second', value: ticksPerSecond.toFixed(1) },
+            { name: 'canvas size', value: `${baseData.width()} x ${baseData.height()}` },
             { name: 'real size', value: `${baseData.width() * baseData.ratio()} x ${baseData.height() * baseData.ratio()}` },
             ...(circle.entries || []),
             ...(circleDot.entries || []),

@@ -1,4 +1,5 @@
 import { ChaserDot } from "interfaces";
+import { renderTrail } from "./trail";
 
 export function renderChaserDot(context: CanvasRenderingContext2D, dto: ChaserDot) {
     // update position
@@ -10,6 +11,11 @@ export function renderChaserDot(context: CanvasRenderingContext2D, dto: ChaserDo
         const angle = Math.atan2(dy, dx);
         dto.pos.x += speed * Math.cos(angle);
         dto.pos.y += speed * Math.sin(angle);
+    }
+
+    if(dto.trail !== undefined) {
+        dto.trail.points.push({ x: dto.pos.x, y: dto.pos.y });
+        renderTrail(context, dto.trail);
     }
 
     // render the chaser dot

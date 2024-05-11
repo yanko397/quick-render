@@ -21,28 +21,36 @@ interface Point {
     y: number;
 };
 
-export interface Circle extends Printable{
+export interface Circle extends Printable {
     center: () => Point;
     radius: () => number;
     color: string;
     lineWidth: number;
 };
 
-interface Dot extends Printable{
+interface Dot extends Printable {
     pos: Point;
     radius: number;
     color: string;
     speed: number;
+    trail?: Trail;
 };
 
-export interface CircleDot extends Dot{
+export interface CircleDot extends Dot {
     circleCenter: () => Point;
     circleRadius: () => number;
     direction: 'clockwise' | 'counter-clockwise';
 };
 
-export interface ChaserDot extends Dot{
+export interface ChaserDot extends Dot {
     target?: Point;
+};
+
+export interface Trail extends Printable {
+    points: Point[];
+    maxLength: number;
+    radius: number;
+    color: string;
 };
 
 export interface DVDLogo extends Printable {

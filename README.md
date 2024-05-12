@@ -17,3 +17,11 @@ npm run build  # or `npm run watch` if you want to develop and see changes in re
 # start the server
 npm start
 ```
+
+# Deploy to github pages
+
+```bash
+npm run deploy
+```
+
+- on github, go to the repository settings and set the github pages source to `gh-pages` branch

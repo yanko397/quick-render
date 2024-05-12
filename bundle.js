@@ -12,14 +12,15 @@
         const width = baseData.width();
         const height = baseData.height();
         // faster the further away from the borders
-        dto.currentSpeed = dto.baseSpeed
+        const currentSpeed = dto.baseSpeed
             + dto.boostRatio * Math.min(dto.pos.x, width - dto.pos.x - dto.width, dto.pos.y, height - dto.pos.y - dto.height);
+        dto.currentSpeed = () => currentSpeed;
         // bounce off the borders
         dto.right = (dto.pos.x >= width - dto.width) ? false : (dto.pos.x <= 0) ? true : dto.right;
         dto.down = (dto.pos.y >= height - dto.height) ? false : (dto.pos.y <= 0) ? true : dto.down;
         // update position
-        dto.pos.x += dto.right ? dto.currentSpeed : -dto.currentSpeed;
-        dto.pos.y += dto.down ? dto.currentSpeed : -dto.currentSpeed;
+        dto.pos.x += dto.right ? currentSpeed : -currentSpeed;
+        dto.pos.y += dto.down ? currentSpeed : -currentSpeed;
         // ensure the logo is within the canvas
         dto.pos.x = Math.max(dto.pos.x, 0);
         dto.pos.x = Math.min(dto.pos.x, width - dto.width);
@@ -31,8 +32,8 @@
         // update status text
         dto.entries = [{
                 name: 'dvd speed',
-                value: dto.currentSpeed.toFixed(1),
-                extra: '='.repeat(Math.max(0, Math.floor(dto.currentSpeed * 2)))
+                value: currentSpeed.toFixed(1),
+                extra: '='.repeat(Math.max(0, Math.floor(currentSpeed * 2)))
             }];
     }
 
@@ -57,31 +58,14 @@
         }
     }
 
-    function renderCircleDot(context, baseData, dto) {
-        // update position
-        const theta = (dto.direction == 'clockwise' ? 1 : -1) * dto.speed / dto.circleRadius() * baseData.tick;
-        dto.pos.x = dto.circleCenter().x + dto.circleRadius() * Math.cos(theta);
-        dto.pos.y = dto.circleCenter().y + dto.circleRadius() * Math.sin(theta);
-        // render the circle dot
-        context.fillStyle = dto.color;
-        context.beginPath();
-        context.arc(dto.pos.x, dto.pos.y, dto.radius, 0, Math.PI * 2);
-        context.fill();
-        // update status text
-        dto.entries = [
-            { name: 'circle dot speed', value: dto.speed },
-            { name: 'circle dot position', value: `(${dto.pos.x.toFixed()}, ${dto.pos.y.toFixed()})` },
-        ];
-    }
-
     function renderChaserDot(context, dto) {
-        var _a, _b;
         // update position
-        if (((_a = dto.target) === null || _a === void 0 ? void 0 : _a.x) && ((_b = dto.target) === null || _b === void 0 ? void 0 : _b.y)) {
-            const dx = dto.target.x - dto.pos.x;
-            const dy = dto.target.y - dto.pos.y;
+        if (dto.target) {
+            const target = dto.target();
+            const dx = target.x - dto.pos.x;
+            const dy = target.y - dto.pos.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            const speed = Math.min(dto.speed, distance);
+            const speed = Math.min(dto.speed(), distance);
             const angle = Math.atan2(dy, dx);
             dto.pos.x += speed * Math.cos(angle);
             dto.pos.y += speed * Math.sin(angle);
@@ -122,6 +106,12 @@
         createImageBitmap(od).then(img => context.drawImage(img, 0, 0));
     }
 
+    function getCenter(dto) {
+        return () => ({
+            x: dto.pos.x + dto.width / 2,
+            y: dto.pos.y + dto.height / 2
+        });
+    }
     function animate(canvas, context, overlay) {
         const baseData = {
             tick: 0,
@@ -140,6 +130,20 @@
             width: 150,
             height: 50,
         };
+        const dvdChaser = {
+            pos: { x: baseData.width() / 2, y: baseData.height() / 2 },
+            radius: 10,
+            color: 'rgba(255,0,0,255)',
+            speed: () => dvdLogo.currentSpeed ? dvdLogo.currentSpeed() : 1 * 0.5,
+            target: getCenter(dvdLogo),
+        };
+        const dvdChaser2 = {
+            pos: { x: baseData.width() / 2, y: baseData.height() / 2 },
+            radius: 10,
+            color: 'rgba(255,255,0,255)',
+            speed: () => 2,
+            target: getCenter(dvdLogo),
+        };
         const circle = {
             center: () => ({ x: baseData.width() / 2, y: baseData.height() / 2 }),
             radius: () => Math.min(baseData.width(), baseData.height()) / 2 - 30,
@@ -152,15 +156,15 @@
             radius: 20,
             circleRadius: circle.radius,
             color: 'rgba(0,255,0,255)',
-            speed: 3,
+            speed: () => 3,
             direction: 'clockwise',
         };
         const chaserDot = {
             pos: { x: baseData.width() / 2, y: baseData.height() / 2 },
             radius: 10,
             color: 'rgba(255,0,0,255)',
-            speed: circleDot.speed * 0.5,
-            target: circleDot.pos,
+            speed: () => circleDot.speed() * 0.5,
+            target: () => circleDot.pos,
         };
         let image = new Image();
         image.src = 'dvd-logo.svg';
@@ -172,11 +176,12 @@
         let ticksPerSecond = 0;
         function draw() {
             context.clearRect(0, 0, canvas.width, canvas.height);
-            renderTrails(context, baseData, [circleDot, chaserDot, dvdLogo]);
-            // renderCircle(context, circle);
-            renderCircleDot(context, baseData, circleDot);
-            renderChaserDot(context, chaserDot);
+            renderTrails(context, baseData, [circleDot, chaserDot, dvdLogo, dvdChaser, dvdChaser2]);
+            // renderCircleDot(context, baseData, circleDot);
+            // renderChaserDot(context, chaserDot);
             renderDvdLogo(context, baseData, dvdLogo);
+            renderChaserDot(context, dvdChaser);
+            renderChaserDot(context, dvdChaser2);
             const now = performance.now();
             if (baseData.tick % 50 === 0) {
                 const elapsed = now - recently;

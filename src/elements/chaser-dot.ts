@@ -2,11 +2,12 @@ import { ChaserDot } from "interfaces";
 
 export function renderChaserDot(context: CanvasRenderingContext2D, dto: ChaserDot) {
     // update position
-    if (dto.target?.x && dto.target?.y) {
-        const dx = dto.target.x - dto.pos.x;
-        const dy = dto.target.y - dto.pos.y;
+    if (dto.target) {
+        const target = dto.target();
+        const dx = target.x - dto.pos.x;
+        const dy = target.y - dto.pos.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
-        const speed = Math.min(dto.speed, distance);
+        const speed = Math.min(dto.speed(), distance);
         const angle = Math.atan2(dy, dx);
         dto.pos.x += speed * Math.cos(angle);
         dto.pos.y += speed * Math.sin(angle);

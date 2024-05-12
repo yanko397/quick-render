@@ -18,6 +18,12 @@ interface Printable {
     entries?: StatusEntry[];
 };
 
+export interface Area {
+    pos: Point,
+    width: number,
+    height: number,
+};
+
 export interface Trailable {
     pos: Point,
     width?: number,
@@ -41,7 +47,7 @@ interface Dot extends Printable {
     pos: Point;
     radius: number;
     color: string;
-    speed: number;
+    speed: () => number;
     trail?: Trail;
 };
 
@@ -52,7 +58,7 @@ export interface CircleDot extends Dot {
 };
 
 export interface ChaserDot extends Dot {
-    target?: Point;
+    target?: () => Point;
 };
 
 export interface Trail extends Printable {
@@ -60,14 +66,11 @@ export interface Trail extends Printable {
     color: { r: number, g: number, b: number, a: number };
 };
 
-export interface DVDLogo extends Printable {
-    pos: Point;
+export interface DVDLogo extends Area, Printable {
     right: boolean;
     down: boolean;
     baseSpeed: number;
-    currentSpeed?: number;
+    currentSpeed?: () => number;
     boostRatio: number;
-    width: number;
-    height: number;
     image?: HTMLImageElement;
 };

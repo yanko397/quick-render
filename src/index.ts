@@ -1,5 +1,12 @@
 import { renderBorder, renderChaserDot, renderCircle, renderCircleDot, renderDvdLogo, renderStatusText, renderTrails } from "@elements";
-import { BaseData, ChaserDot, Circle, CircleDot, DVDLogo, StatusEntry } from "@interfaces";
+import { Area, BaseData, ChaserDot, Circle, CircleDot, DVDLogo, StatusEntry } from "@interfaces";
+
+function getCenter(dto: Area) {
+    return () => ({
+        x: dto.pos.x + dto.width / 2,
+        y: dto.pos.y + dto.height / 2
+    });
+}
 
 function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, overlay: () => ImageData) {
     const baseData: BaseData = {
@@ -19,6 +26,20 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, o
         width: 150,
         height: 50,
     };
+    const dvdChaser: ChaserDot = {
+        pos: { x: baseData.width() / 2, y: baseData.height() / 2 },
+        radius: 10,
+        color: 'rgba(255,0,0,255)',
+        speed: () => dvdLogo.currentSpeed ? dvdLogo.currentSpeed() : 1 * 0.5,
+        target: getCenter(dvdLogo),
+    };
+    const dvdChaser2: ChaserDot = {
+        pos: { x: baseData.width() / 2, y: baseData.height() / 2 },
+        radius: 10,
+        color: 'rgba(255,255,0,255)',
+        speed: () => 2,
+        target: getCenter(dvdLogo),
+    };
     const circle: Circle = {
         center: () => ({ x: baseData.width() / 2, y: baseData.height() / 2 }),
         radius: () => Math.min(baseData.width(), baseData.height()) / 2 - 30,
@@ -31,15 +52,15 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, o
         radius: 20,
         circleRadius: circle.radius,
         color: 'rgba(0,255,0,255)',
-        speed: 3,
+        speed: () => 3,
         direction: 'clockwise',
     };
     const chaserDot: ChaserDot = {
         pos: { x: baseData.width() / 2, y: baseData.height() / 2 },
         radius: 10,
         color: 'rgba(255,0,0,255)',
-        speed: circleDot.speed * 0.5,
-        target: circleDot.pos,
+        speed: () => circleDot.speed() * 0.5,
+        target: () => circleDot.pos,
     };
 
     let image = new Image();
@@ -55,13 +76,14 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, o
     function draw() {
         context.clearRect(0, 0, canvas.width, canvas.height);
 
-        renderTrails(context, baseData, [circleDot, chaserDot, dvdLogo]);
+        renderTrails(context, baseData, [circleDot, chaserDot, dvdLogo, dvdChaser, dvdChaser2]);
 
-        // renderCircle(context, circle);
-        renderCircleDot(context, baseData, circleDot);
-        renderChaserDot(context, chaserDot);
+        // renderCircleDot(context, baseData, circleDot);
+        // renderChaserDot(context, chaserDot);
 
         renderDvdLogo(context, baseData, dvdLogo);
+        renderChaserDot(context, dvdChaser);
+        renderChaserDot(context, dvdChaser2);
 
         const now = performance.now();
         if (baseData.tick % 50 === 0) {

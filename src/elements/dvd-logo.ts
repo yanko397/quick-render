@@ -12,16 +12,17 @@ export function renderDvdLogo(context: CanvasRenderingContext2D, baseData: BaseD
     const height = baseData.height();
 
     // faster the further away from the borders
-    dto.currentSpeed = dto.baseSpeed
+    const currentSpeed = dto.baseSpeed
         + dto.boostRatio * Math.min(dto.pos.x, width - dto.pos.x - dto.width, dto.pos.y, height - dto.pos.y - dto.height);
+    dto.currentSpeed = () => currentSpeed;
 
     // bounce off the borders
     dto.right = (dto.pos.x >= width - dto.width) ? false : (dto.pos.x <= 0) ? true : dto.right;
     dto.down = (dto.pos.y >= height - dto.height) ? false : (dto.pos.y <= 0) ? true : dto.down;
 
     // update position
-    dto.pos.x += dto.right ? dto.currentSpeed : -dto.currentSpeed;
-    dto.pos.y += dto.down ? dto.currentSpeed : -dto.currentSpeed;
+    dto.pos.x += dto.right ? currentSpeed : -currentSpeed;
+    dto.pos.y += dto.down ? currentSpeed : -currentSpeed;
 
     // ensure the logo is within the canvas
     dto.pos.x = Math.max(dto.pos.x, 0);
@@ -36,7 +37,7 @@ export function renderDvdLogo(context: CanvasRenderingContext2D, baseData: BaseD
     // update status text
     dto.entries = [{
         name: 'dvd speed',
-        value: dto.currentSpeed.toFixed(1),
-        extra: '='.repeat(Math.max(0, Math.floor(dto.currentSpeed * 2)))
+        value: currentSpeed.toFixed(1),
+        extra: '='.repeat(Math.max(0, Math.floor(currentSpeed * 2)))
     }];
 }

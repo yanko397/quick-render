@@ -31,8 +31,6 @@ export function renderDvdLogo(context: CanvasRenderingContext2D, baseData: BaseD
 
     if (dto.image) {
         context.drawImage(dto.image, dto.pos.x, dto.pos.y, dto.width, dto.height);
-    } else {
-        // context.fillRect(dto.x, dto.y, dto.width, dto.height);
     }
 
     // update status text

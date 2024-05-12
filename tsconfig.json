@@ -6,8 +6,9 @@
         "outDir": "./dist",
         "baseUrl": "src",
         "paths": {
+            "@interfaces": ["interfaces"],
             "@elements": ["elements/index"],
-            "@types": ["types"]
+            "@types": ["types"],
         }
     },
     "include": [

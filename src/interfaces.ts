@@ -4,6 +4,8 @@ export interface BaseData {
     width: () => number;
     height: () => number;
     ratio: () => number;
+    // contains trails of objects etc.
+    overlay: () => ImageData;
 };
 
 export interface StatusEntry {
@@ -16,7 +18,14 @@ interface Printable {
     entries?: StatusEntry[];
 };
 
-interface Point {
+export interface Trailable {
+    pos: Point,
+    width?: number,
+    height?: number
+    color?: string;
+};
+
+export interface Point {
     x: number;
     y: number;
 };
@@ -47,10 +56,8 @@ export interface ChaserDot extends Dot {
 };
 
 export interface Trail extends Printable {
-    points: Point[];
-    maxLength: number;
-    radius: number;
-    color: string;
+    pos: Point;
+    color: { r: number, g: number, b: number, a: number };
 };
 
 export interface DVDLogo extends Printable {

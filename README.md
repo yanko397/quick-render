@@ -1,8 +1,9 @@
 
 # WAT
 
-This is a simple web app that just contains a canvas to render all kinds of stuff.
+This is a simple web app that just contains a canvas to render all kinds of stuff like this:
 
+[preview](https://yanko397.github.io/quick-render)
 
 # How to run
 

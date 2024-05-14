@@ -244,7 +244,7 @@
         const circleChaser = new ChaserDot({
             pos: () => ({ x: baseData.width() / 2, y: baseData.height() / 2 }),
             radius: 10,
-            color: 'rgba(255,0,0,255)',
+            color: 'rgba(0,255,255,255)',
             speed: () => circleDot.options.speed() * 0.5,
             target: () => circleDot.options.pos(),
         });
@@ -252,7 +252,7 @@
             dvdLogo,
             dvdChaserDynamic,
             dvdChaserStatic,
-            circle,
+            // circle,
             circleDot,
             circleChaser,
         ];

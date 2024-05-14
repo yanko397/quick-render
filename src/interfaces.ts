@@ -1,3 +1,32 @@
+import { Printable } from "@elements";
+
+export interface Shape {
+    draw(ctx: CanvasRenderingContext2D): void;
+    // contains(point: Point): boolean;
+    // move(dx: number, dy: number): void;
+    // resize(dw: number, dh: number): void;
+    // rotate(angle: number): void;
+    // scale(factor: number): void;
+    // translate(dx: number, dy: number): void;
+}
+
+export interface Dot extends Shape, Printable {
+    options: {
+        pos: () => Point;
+        radius: number;
+        color: string;
+        speed: () => number;
+    };
+};
+
+export interface Area extends Shape, Printable {
+    options: {
+        pos: () => Point;
+        width: number;
+        height: number;
+    };
+};
+
 export interface BaseData {
     tick: number;
     fontSize: number;
@@ -14,63 +43,16 @@ export interface StatusEntry {
     extra?: string;
 };
 
-interface Printable {
-    entries?: StatusEntry[];
-};
-
-export interface Area {
-    pos: Point,
-    width: number,
-    height: number,
-};
-
 export interface Trailable {
-    pos: Point,
-    width?: number,
-    height?: number
-    color?: string;
+    options: {
+        pos: () => Point,
+        width?: number,
+        height?: number
+        color?: string;
+    };
 };
 
 export interface Point {
     x: number;
     y: number;
-};
-
-export interface Circle extends Printable {
-    center: () => Point;
-    radius: () => number;
-    color: string;
-    lineWidth: number;
-};
-
-interface Dot extends Printable {
-    pos: Point;
-    radius: number;
-    color: string;
-    speed: () => number;
-    trail?: Trail;
-};
-
-export interface CircleDot extends Dot {
-    circleCenter: () => Point;
-    circleRadius: () => number;
-    direction: 'clockwise' | 'counter-clockwise';
-};
-
-export interface ChaserDot extends Dot {
-    target?: () => Point;
-};
-
-export interface Trail extends Printable {
-    pos: Point;
-    color: { r: number, g: number, b: number, a: number };
-};
-
-export interface DVDLogo extends Area, Printable {
-    right: boolean;
-    down: boolean;
-    baseSpeed: number;
-    currentSpeed?: () => number;
-    boostRatio: number;
-    image?: HTMLImageElement;
 };

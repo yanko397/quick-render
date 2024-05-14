@@ -1,43 +1,73 @@
-import { BaseData, DVDLogo as DVDLogo } from "interfaces";
+import { Area, BaseData, Point } from "interfaces";
+import { Printable } from "./printable";
 
-/**
- * Renders the DVD logo on the canvas.
- *
- * @param {HTMLCanvasElement} canvas
- * @param {CanvasRenderingContext2D} context
- * @param {DVDLogo} dto
- */
-export function renderDvdLogo(context: CanvasRenderingContext2D, baseData: BaseData, dto: DVDLogo) {
-    const width = baseData.width();
-    const height = baseData.height();
+type Options = {
+    pos: () => Point,
+    width: number,
+    height: number,
 
-    // faster the further away from the borders
-    const currentSpeed = dto.baseSpeed
-        + dto.boostRatio * Math.min(dto.pos.x, width - dto.pos.x - dto.width, dto.pos.y, height - dto.pos.y - dto.height);
-    dto.currentSpeed = () => currentSpeed;
+    right: boolean,
+    down: boolean,
+    baseSpeed: number,
 
-    // bounce off the borders
-    dto.right = (dto.pos.x >= width - dto.width) ? false : (dto.pos.x <= 0) ? true : dto.right;
-    dto.down = (dto.pos.y >= height - dto.height) ? false : (dto.pos.y <= 0) ? true : dto.down;
+    boostRatio: number,
+    image?: HTMLImageElement,
+};
 
-    // update position
-    dto.pos.x += dto.right ? currentSpeed : -currentSpeed;
-    dto.pos.y += dto.down ? currentSpeed : -currentSpeed;
+export class DVDLogo extends Printable implements Area {
 
-    // ensure the logo is within the canvas
-    dto.pos.x = Math.max(dto.pos.x, 0);
-    dto.pos.x = Math.min(dto.pos.x, width - dto.width);
-    dto.pos.y = Math.max(dto.pos.y, 0);
-    dto.pos.y = Math.min(dto.pos.y, height - dto.height);
+    currentSpeed?: () => number;
 
-    if (dto.image) {
-        context.drawImage(dto.image, dto.pos.x, dto.pos.y, dto.width, dto.height);
+    constructor(
+        public baseData: BaseData,
+        public options: Options,
+    ) {
+        super();
     }
 
-    // update status text
-    dto.entries = [{
-        name: 'dvd speed',
-        value: currentSpeed.toFixed(1),
-        extra: '='.repeat(Math.max(0, Math.floor(currentSpeed * 2)))
-    }];
+    /**
+     * Renders the DVD logo on the canvas.
+     *
+     * @param {CanvasRenderingContext2D} context
+     */
+    draw(context: CanvasRenderingContext2D) {
+        const { pos, width, height, right, down, baseSpeed, boostRatio, image } = this.options;
+
+        const currentPos = pos();
+        const canvasWidth = this.baseData.width();
+        const canvasHeight = this.baseData.height();
+
+        // faster the further away from the borders
+        const currentSpeed = baseSpeed
+            + boostRatio * Math.min(currentPos.x, canvasWidth - currentPos.x - width, currentPos.y, canvasHeight - currentPos.y - height);
+        this.currentSpeed = () => currentSpeed;
+
+        // bounce off the borders
+        this.options.right = (currentPos.x >= canvasWidth - width) ? false : (currentPos.x <= 0) ? true : right;
+        this.options.down = (currentPos.y >= canvasHeight - height) ? false : (currentPos.y <= 0) ? true : down;
+
+        // update currentPosition
+        currentPos.x += this.options.right ? currentSpeed : -currentSpeed;
+        currentPos.y += this.options.down ? currentSpeed : -currentSpeed;
+
+        // ensure the logo is within the canvas
+        currentPos.x = Math.max(currentPos.x, 0);
+        currentPos.x = Math.min(currentPos.x, canvasWidth - width);
+        currentPos.y = Math.max(currentPos.y, 0);
+        currentPos.y = Math.min(currentPos.y, canvasHeight - height);
+
+        if (image) {
+            context.drawImage(image, currentPos.x, currentPos.y, width, height);
+        }
+
+        // update saved position
+        this.options.pos = () => currentPos;
+
+        // update status text
+        this.entries = [{
+            name: 'dvd speed',
+            value: currentSpeed.toFixed(1),
+            extra: '='.repeat(Math.max(0, Math.floor(currentSpeed * 2)))
+        }];
+    }
 }

@@ -1,6 +1,12 @@
 (function () {
     'use strict';
 
+    class Printable {
+        constructor() {
+            this.entries = [];
+        }
+    }
+
     class DVDLogo extends Printable {
         constructor(baseData, options) {
             super();
@@ -35,6 +41,8 @@
             if (image) {
                 context.drawImage(image, currentPos.x, currentPos.y, width, height);
             }
+            // update saved position
+            this.options.pos = () => currentPos;
             // update status text
             this.entries = [{
                     name: 'dvd speed',
@@ -79,6 +87,8 @@
             context.beginPath();
             context.arc(currentPos.x, currentPos.y, radius, 0, Math.PI * 2);
             context.fill();
+            // update saved position
+            this.options.pos = () => currentPos;
             // update status text
             this.entries = [
                 { name: 'circle dot speed', value: currentSpeed },
@@ -111,6 +121,8 @@
             context.beginPath();
             context.arc(currentPos.x, currentPos.y, radius, 0, Math.PI * 2);
             context.fill();
+            // update saved position
+            this.options.pos = () => currentPos;
         }
     }
 
@@ -175,12 +187,6 @@
         }
     }
 
-    class Printable {
-        constructor() {
-            this.entries = [];
-        }
-    }
-
     function getCenter(dto) {
         const pos = dto.options.pos();
         return {
@@ -198,7 +204,7 @@
             overlay: overlay,
         };
         const dvdLogo = new DVDLogo(baseData, {
-            pos: () => ({ x: 0, y: 0 }),
+            pos: () => ({ x: baseData.width() / 2, y: baseData.height() / 2 }),
             right: true,
             down: true,
             baseSpeed: 0.3,
@@ -206,11 +212,18 @@
             width: 150,
             height: 50,
         });
-        const chaserDot = new ChaserDot({
+        const dvdChaserDynamic = new ChaserDot({
             pos: () => ({ x: baseData.width() / 2, y: baseData.height() / 2 }),
             radius: 10,
             color: 'rgba(255,0,0,255)',
             speed: () => dvdLogo.currentSpeed ? dvdLogo.currentSpeed() : 1 * 0.5,
+            target: () => getCenter(dvdLogo),
+        });
+        const dvdChaserStatic = new ChaserDot({
+            pos: () => ({ x: baseData.width() / 2, y: baseData.height() / 2 }),
+            radius: 10,
+            color: 'rgba(255,255,0,255)',
+            speed: () => 2,
             target: () => getCenter(dvdLogo),
         });
         const circle = new Circle({
@@ -228,25 +241,20 @@
             speed: () => 3,
             direction: 'clockwise',
         });
+        const circleChaser = new ChaserDot({
+            pos: () => ({ x: baseData.width() / 2, y: baseData.height() / 2 }),
+            radius: 10,
+            color: 'rgba(255,0,0,255)',
+            speed: () => circleDot.options.speed() * 0.5,
+            target: () => circleDot.options.pos(),
+        });
         const elements = [
             dvdLogo,
-            chaserDot,
-            new ChaserDot({
-                pos: () => ({ x: baseData.width() / 2, y: baseData.height() / 2 }),
-                radius: 10,
-                color: 'rgba(255,255,0,255)',
-                speed: () => 2,
-                target: () => getCenter(dvdLogo),
-            }),
+            dvdChaserDynamic,
+            dvdChaserStatic,
             circle,
             circleDot,
-            new ChaserDot({
-                pos: () => ({ x: baseData.width() / 2, y: baseData.height() / 2 }),
-                radius: 10,
-                color: 'rgba(255,0,0,255)',
-                speed: () => circleDot.options.speed() * 0.5,
-                target: circleDot.options.pos,
-            }),
+            circleChaser,
         ];
         const trails = new TrailLayer(baseData, elements);
         const statusText = new StatusText(baseData);
@@ -266,8 +274,6 @@
                 ticksPerSecond = 50 / (elapsed / 1000);
                 recently = now;
             }
-            elements.forEach(element => element.draw(context));
-            trails.draw(context);
             const statusEntries = [
                 { name: 'tick', value: baseData.tick },
                 { name: 'ticks per second', value: ticksPerSecond.toFixed(1) },
@@ -275,10 +281,12 @@
                 { name: 'real size', value: `${baseData.width() * baseData.ratio()} x ${baseData.height() * baseData.ratio()}` },
                 ...(circle.entries),
                 ...(circleDot.entries),
-                ...(chaserDot.entries),
+                ...(dvdChaserDynamic.entries),
                 ...(dvdLogo.entries),
             ];
             statusText.draw(context, statusEntries);
+            elements.forEach(element => element.draw(context));
+            trails.draw(context);
             baseData.tick++;
             requestAnimationFrame(draw);
         }

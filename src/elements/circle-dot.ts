@@ -1,4 +1,4 @@
-import { BaseData, Dot, Point } from "interfaces";
+import { Screen, Dot, Point } from "interfaces";
 import { Printable } from "./printable";
 
 type Options = {
@@ -14,7 +14,7 @@ type Options = {
 export class CircleDot extends Printable implements Dot {
 
     constructor(
-        public baseData: BaseData,
+        public baseData: Screen,
         public options: Options,
     ) { super(); }
 

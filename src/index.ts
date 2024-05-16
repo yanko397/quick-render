@@ -1,5 +1,5 @@
 import { ChaserDot, Circle, CircleDot, DVDLogo, StatusText, TrailLayer } from "@elements";
-import { Area, BaseData, Shape, StatusEntry, Trailable } from "@interfaces";
+import { Area, Screen, Shape, StatusEntry, Trailable } from "@interfaces";
 
 function getCenter(dto: Area) {
     const pos = dto.options.pos();
@@ -10,7 +10,7 @@ function getCenter(dto: Area) {
 }
 
 function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, overlay: () => ImageData) {
-    const baseData: BaseData = {
+    const baseData: Screen = {
         tick: 0,
         fontSize: 12,
         width: () => window.innerWidth,

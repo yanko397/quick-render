@@ -1,9 +1,9 @@
-import { BaseData, StatusEntry } from "interfaces";
+import { Screen, StatusEntry } from "interfaces";
 
 export class StatusText {
 
     constructor(
-        public baseData: BaseData,
+        public baseData: Screen,
     ) { }
 
     /**
@@ -14,7 +14,7 @@ export class StatusText {
      */
     draw(context: CanvasRenderingContext2D, entries: StatusEntry[]) {
         function makeStatus(entry: StatusEntry) {
-            return `${entry.name}`.padEnd(24, ' ')
+            return `${entry.name}`.padEnd(28, ' ')
                 + '|' + `${entry.value}`.padStart(15, ' ')
                 + (entry.extra !== undefined ? `  ${entry.extra}` : '');
         }

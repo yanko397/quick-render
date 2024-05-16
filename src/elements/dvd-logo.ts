@@ -1,4 +1,4 @@
-import { Area, BaseData, Point } from "interfaces";
+import { Area, Screen, Point } from "interfaces";
 import { Printable } from "./printable";
 
 type Options = {
@@ -19,11 +19,9 @@ export class DVDLogo extends Printable implements Area {
     currentSpeed?: () => number;
 
     constructor(
-        public baseData: BaseData,
+        public baseData: Screen,
         public options: Options,
-    ) {
-        super();
-    }
+    ) { super(); }
 
     /**
      * Renders the DVD logo on the canvas.

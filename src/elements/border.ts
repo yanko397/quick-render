@@ -1,9 +1,9 @@
-import { BaseData } from "interfaces";
+import { Screen } from "interfaces";
 
 export class Border {
 
     constructor(
-        public baseData: BaseData,
+        public baseData: Screen,
     ) { };
 
     /**

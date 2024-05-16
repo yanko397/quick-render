@@ -1,9 +1,9 @@
-import { BaseData, Trailable } from "interfaces";
+import { Screen, Trailable } from "interfaces";
 
 export class TrailLayer {
 
     constructor(
-        public baseData: BaseData,
+        public baseData: Screen,
         public trailables: Trailable[],
     ) { }
 

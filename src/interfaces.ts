@@ -27,7 +27,7 @@ export interface Area extends Shape, Printable {
     };
 };
 
-export interface BaseData {
+export interface Screen {
     tick: number;
     fontSize: number;
     width: () => number;

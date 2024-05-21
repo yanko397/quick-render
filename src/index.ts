@@ -56,20 +56,24 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, o
         speed: () => 3,
         direction: 'clockwise',
     });
-    const circleChaser = new ChaserDot({
-        pos: () => ({ x: baseData.width() / 2, y: baseData.height() / 2 }),
-        radius: 10,
-        color: 'rgba(0,255,255,255)',
-        speed: () => circleDot.options.speed() * 0.5,
-        target: () => circleDot.options.pos(),
-    });
+    const circleChasers = []
+    for (let i = 255; i >= 0; i--) {
+        // if (i % 10 !== 0) continue;
+        circleChasers.push(new ChaserDot({
+            pos: () => ({ x: baseData.width() / 2, y: baseData.height() / 2 }),
+            radius: 10,
+            color: `rgba(100,${i},100,255)`,
+            speed: () => Math.log(circleDot.options.speed() * i) / circleDot.options.radius * 10,
+            target: () => circleDot.options.pos(),
+        }));
+    }
     const elements: (Shape & Trailable)[] = [
-        dvdLogo,
-        dvdChaserDynamic,
-        dvdChaserStatic,
+        // dvdLogo,
+        // dvdChaserDynamic,
+        // dvdChaserStatic,
         // circle,
         circleDot,
-        circleChaser,
+        ...circleChasers,
     ];
 
     const trails = new TrailLayer(baseData, elements);

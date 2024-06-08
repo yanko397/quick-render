@@ -18,7 +18,7 @@ export class ChaserDot extends Printable implements Dot {
     draw(context: CanvasRenderingContext2D) {
         const { pos, radius, color, speed, target } = this.options;
 
-        const currentPos = pos();
+        let currentPos = structuredClone(pos());
 
         // update position
         if (target) {

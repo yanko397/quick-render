@@ -21,7 +21,7 @@ export class CircleDot extends Printable implements Dot {
     draw(context: CanvasRenderingContext2D) {
         const { pos, radius, color, speed, circleCenter, circleRadius, direction } = this.options;
 
-        const currentPos = pos();
+        const currentPos = structuredClone(pos());
         const currentSpeed = speed();
 
         // update position

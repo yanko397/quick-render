@@ -31,7 +31,7 @@ export class DVDLogo extends Printable implements Area {
     draw(context: CanvasRenderingContext2D) {
         const { pos, width, height, right, down, baseSpeed, boostRatio, image } = this.options;
 
-        const currentPos = pos();
+        const currentPos = structuredClone(pos());
         const canvasWidth = this.baseData.width();
         const canvasHeight = this.baseData.height();
 

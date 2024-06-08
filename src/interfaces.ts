@@ -39,7 +39,7 @@ export interface Screen {
 
 export interface StatusEntry {
     name: string;
-    value: string | number;
+    value: string | number | (() => string | number);
     extra?: string;
 };
 

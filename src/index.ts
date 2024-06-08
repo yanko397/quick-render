@@ -1,4 +1,4 @@
-import { ChaserDot, Circle, CircleDot, DVDLogo, StatusText, TrailLayer } from "@elements";
+import { ChaserDot, Circle, CircleDot, DVDLogo, Printable, StatusText, TrailLayer } from "@elements";
 import { Area, Screen, Shape, StatusEntry, Trailable } from "@interfaces";
 
 function getCenter(dto: Area) {
@@ -27,6 +27,12 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, o
         width: 150,
         height: 50,
     });
+    const image = new Image();
+    image.src = 'dvd-logo.svg';
+    image.onload = () => {
+        dvdLogo.options.image = image;
+        dvdLogo.options.height = image.height * dvdLogo.options.width / image.width;
+    };
     const dvdChaserDynamic = new ChaserDot({
         pos: () => ({ x: baseData.width() / 2, y: baseData.height() / 2 }),
         radius: 10,
@@ -56,35 +62,39 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, o
         speed: () => 3,
         direction: 'clockwise',
     });
-    const circleChasers = []
-    for (let i = 255; i >= 0; i--) {
-        // if (i % 10 !== 0) continue;
-        circleChasers.push(new ChaserDot({
-            pos: () => ({ x: baseData.width() / 2, y: baseData.height() / 2 }),
+    circleDot.draw(context); // initialize circleDot position
+
+    const chaserCount = 200;
+    const circleChasers: ChaserDot[] = Array.from({ length: chaserCount }, (_, i) => {
+        const maxSpeed = circleDot.options.speed();
+        const minSpeed = 0.3;
+        const speedDecrement = (maxSpeed - minSpeed) / (chaserCount - 1);
+
+        const chaserDot = new ChaserDot({
+            pos: circleDot.options.pos,
             radius: 10,
-            color: `rgba(100,${i},100,255)`,
-            speed: () => Math.log(circleDot.options.speed() * i) / circleDot.options.radius * 10,
-            target: () => circleDot.options.pos(),
-        }));
-    }
-    const elements: (Shape & Trailable)[] = [
-        // dvdLogo,
-        // dvdChaserDynamic,
-        // dvdChaserStatic,
-        // circle,
+            color: `rgba(100,${255 - i * (255 / (chaserCount - 1))},100,255)`,
+            speed: () => maxSpeed - i * speedDecrement,
+        });
+
+        chaserDot.options.target = i > 0
+            ? () => circleChasers[i - 1].options.pos()
+            : () => circleDot.options.pos();
+
+        if (i === 0 || i === chaserCount - 1) {
+            chaserDot.entries.push({ name: `chaser #${i + 1} speed`, value: () => chaserDot.options.speed().toPrecision(1) });
+        }
+
+        return chaserDot;
+    });
+
+    const elements: (Shape & Trailable & Printable)[] = [
         circleDot,
         ...circleChasers,
     ];
 
     const trails = new TrailLayer(baseData, elements);
     const statusText = new StatusText(baseData);
-
-    let image = new Image();
-    image.src = 'dvd-logo.svg';
-    image.onload = () => {
-        dvdLogo.options.image = image;
-        dvdLogo.options.height = image.height * dvdLogo.options.width / image.width;
-    };
 
     let recently = performance.now();
     let ticksPerSecond = 0;
@@ -104,11 +114,9 @@ function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, o
             { name: 'ticks per second', value: ticksPerSecond.toFixed(1) },
             { name: 'canvas size', value: `${baseData.width()} x ${baseData.height()}` },
             { name: 'real size', value: `${baseData.width() * baseData.ratio()} x ${baseData.height() * baseData.ratio()}` },
-            ...(circle.entries),
-            ...(circleDot.entries),
-            ...(dvdChaserDynamic.entries),
-            ...(dvdLogo.entries),
-        ]
+
+            ...(elements.map(element => element.entries).flat()),
+        ];
 
         statusText.draw(context, statusEntries);
         elements.forEach(element => element.draw(context));

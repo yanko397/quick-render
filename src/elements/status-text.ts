@@ -14,8 +14,9 @@ export class StatusText {
      */
     draw(context: CanvasRenderingContext2D, entries: StatusEntry[]) {
         function makeStatus(entry: StatusEntry) {
+            let value = typeof entry.value === 'function' ? entry.value() : entry.value;
             return `${entry.name}`.padEnd(28, ' ')
-                + '|' + `${entry.value}`.padStart(15, ' ')
+                + '|' + `${value}`.padStart(15, ' ')
                 + (entry.extra !== undefined ? `  ${entry.extra}` : '');
         }
 

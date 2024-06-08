@@ -20,7 +20,7 @@
          */
         draw(context) {
             const { pos, width, height, right, down, baseSpeed, boostRatio, image } = this.options;
-            const currentPos = pos();
+            const currentPos = structuredClone(pos());
             const canvasWidth = this.baseData.width();
             const canvasHeight = this.baseData.height();
             // faster the further away from the borders
@@ -76,7 +76,7 @@
         }
         draw(context) {
             const { pos, radius, color, speed, circleCenter, circleRadius, direction } = this.options;
-            const currentPos = pos();
+            const currentPos = structuredClone(pos());
             const currentSpeed = speed();
             // update position
             const theta = (direction == 'clockwise' ? 1 : -1) * currentSpeed / circleRadius() * this.baseData.tick;
@@ -104,7 +104,7 @@
         }
         draw(context) {
             const { pos, radius, color, speed, target } = this.options;
-            const currentPos = pos();
+            let currentPos = structuredClone(pos());
             // update position
             if (target) {
                 const currentTarget = target();
@@ -138,8 +138,9 @@
          */
         draw(context, entries) {
             function makeStatus(entry) {
-                return `${entry.name}`.padEnd(24, ' ')
-                    + '|' + `${entry.value}`.padStart(15, ' ')
+                let value = typeof entry.value === 'function' ? entry.value() : entry.value;
+                return `${entry.name}`.padEnd(28, ' ')
+                    + '|' + `${value}`.padStart(15, ' ')
                     + (entry.extra !== undefined ? `  ${entry.extra}` : '');
             }
             const statusTexts = entries.map(makeStatus);
@@ -212,14 +213,20 @@
             width: 150,
             height: 50,
         });
-        const dvdChaserDynamic = new ChaserDot({
+        const image = new Image();
+        image.src = 'dvd-logo.svg';
+        image.onload = () => {
+            dvdLogo.options.image = image;
+            dvdLogo.options.height = image.height * dvdLogo.options.width / image.width;
+        };
+        new ChaserDot({
             pos: () => ({ x: baseData.width() / 2, y: baseData.height() / 2 }),
             radius: 10,
             color: 'rgba(255,0,0,255)',
             speed: () => dvdLogo.currentSpeed ? dvdLogo.currentSpeed() : 1 * 0.5,
             target: () => getCenter(dvdLogo),
         });
-        const dvdChaserStatic = new ChaserDot({
+        new ChaserDot({
             pos: () => ({ x: baseData.width() / 2, y: baseData.height() / 2 }),
             radius: 10,
             color: 'rgba(255,255,0,255)',
@@ -241,29 +248,32 @@
             speed: () => 3,
             direction: 'clockwise',
         });
-        const circleChaser = new ChaserDot({
-            pos: () => ({ x: baseData.width() / 2, y: baseData.height() / 2 }),
-            radius: 10,
-            color: 'rgba(0,255,255,255)',
-            speed: () => circleDot.options.speed() * 0.5,
-            target: () => circleDot.options.pos(),
+        circleDot.draw(context); // initialize circleDot position
+        const chaserCount = 200;
+        const circleChasers = Array.from({ length: chaserCount }, (_, i) => {
+            const maxSpeed = circleDot.options.speed();
+            const minSpeed = 0.3;
+            const speedDecrement = (maxSpeed - minSpeed) / (chaserCount - 1);
+            const chaserDot = new ChaserDot({
+                pos: circleDot.options.pos,
+                radius: 10,
+                color: `rgba(100,${255 - i * (255 / (chaserCount - 1))},100,255)`,
+                speed: () => maxSpeed - i * speedDecrement,
+            });
+            chaserDot.options.target = i > 0
+                ? () => circleChasers[i - 1].options.pos()
+                : () => circleDot.options.pos();
+            if (i === 0 || i === chaserCount - 1) {
+                chaserDot.entries.push({ name: `chaser #${i + 1} speed`, value: () => chaserDot.options.speed().toPrecision(1) });
+            }
+            return chaserDot;
         });
         const elements = [
-            dvdLogo,
-            dvdChaserDynamic,
-            dvdChaserStatic,
-            // circle,
             circleDot,
-            circleChaser,
+            ...circleChasers,
         ];
         const trails = new TrailLayer(baseData, elements);
         const statusText = new StatusText(baseData);
-        let image = new Image();
-        image.src = 'dvd-logo.svg';
-        image.onload = () => {
-            dvdLogo.options.image = image;
-            dvdLogo.options.height = image.height * dvdLogo.options.width / image.width;
-        };
         let recently = performance.now();
         let ticksPerSecond = 0;
         function draw() {
@@ -279,10 +289,7 @@
                 { name: 'ticks per second', value: ticksPerSecond.toFixed(1) },
                 { name: 'canvas size', value: `${baseData.width()} x ${baseData.height()}` },
                 { name: 'real size', value: `${baseData.width() * baseData.ratio()} x ${baseData.height() * baseData.ratio()}` },
-                ...(circle.entries),
-                ...(circleDot.entries),
-                ...(dvdChaserDynamic.entries),
-                ...(dvdLogo.entries),
+                ...(elements.map(element => element.entries).flat()),
             ];
             statusText.draw(context, statusEntries);
             elements.forEach(element => element.draw(context));
